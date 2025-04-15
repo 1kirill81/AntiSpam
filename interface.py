@@ -1,5 +1,8 @@
 import tkinter as tk
 from customtkinter import *
+from PIL import Image, ImageTk
+from uritemplate import expand
+
 import alg
 
 
@@ -9,7 +12,7 @@ class App(CTk):
 
         bg_color = self._apply_appearance_mode(self.cget("background"))
 
-        name = CTkLabel(self, text="Проверка сообщения на спам")
+        name = CTkLabel(self, text="Проверка сообщения на спам", font=("Arial",20, "bold"))
         name.pack(padx=10, pady=10, anchor="n")
 
 
@@ -46,14 +49,46 @@ class App(CTk):
                 ans_text.configure(border_color="green")
                 ans_text.insert(END, "\nТекст безопасен, спам-фраз не обнаружено.")
 
-        btn = CTkButton(vvod_frame, text="Ввод", command=print_text)
-        btn.grid(row=2, padx=10, pady=10)
+        btn_frame = CTkFrame(vvod_frame, width=200)
+        btn_frame.grid(row=2, padx=10, pady=10)
+
+        btn = CTkButton(btn_frame, text="Ввод", command=print_text, width=135, height=35)
+        btn.grid(row=0, column=1, padx=5, pady=5)
+
+        def load_from_file():
+            file_path = filedialog.askopenfilename(title="Выберите файл", filetypes=[('Text Files', '*.txt')])
+            with open(file_path, "r", encoding="utf-8") as file:
+                text = file.read()
+                input_text.delete(0.0, 'end')
+                input_text.insert(END, "Файл: "+file_path[file_path.rfind("/")+1:]+"\n"+text)
+                spam_phrases = alg.load_spam_phrases()
+                spam_words = alg.load_spam_words()
+                detected_phrases = alg.check_spam(text, spam_phrases, spam_words)
+                if detected_phrases:
+                    a = '------\n'
+                    for phrase in detected_phrases:
+                        a += f"- {phrase}\n"
+                        ans_text.delete(0.0, 'end')
+                    a += "------"
+                    ans_text.configure(border_color="red")
+                    ans_text.insert(END, f"\nОбнаружены спам-фразы:\n\n{a}\n\nРекомендуется пометить как спам!")
+                else:
+                    ans_text.delete(0.0, 'end')
+                    ans_text.configure(border_color="green")
+                    ans_text.insert(END, "\nТекст безопасен, спам-фраз не обнаружено.")
+
+        icon = tk.PhotoImage(file="../AntiSpam/img/icn1.png")
+        btn_file = CTkButton(btn_frame, width=35, image=icon, text='', command=load_from_file)
+        btn_file.grid(row=0, column=0, padx=5, pady=5)
+
+
 
         ans_frame = CTkFrame(main_frame)
         ans_frame.grid(row=1, column=1, padx=10, pady=10)
 
         ans_text = CTkTextbox(main_frame, border_width=2, border_color="gray", corner_radius=10)
         ans_text.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
 
 
 app = App()
