@@ -30,8 +30,8 @@ class App(CTk):
         vvod_frame.grid(row=1, column=0, padx=10, pady=10)
 
 
-        l = CTkLabel(vvod_frame, text="Введите сообщение для проверки")  # Указываем родителя
-        l.grid(row=0, column=0, padx=5, pady=5)  # Указываем позицию
+        l = CTkLabel(vvod_frame, text="Введите сообщение для проверки") 
+        l.grid(row=0, column=0, padx=5, pady=5)
 
         input_text = CTkTextbox(vvod_frame)
         input_text.grid(row=1, padx=10)
