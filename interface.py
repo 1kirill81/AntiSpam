@@ -96,7 +96,7 @@ class App(CTk):
         btn_file.grid(row=0, column=0, padx=5, pady=5)
 
 
-        # Фрейм с выбором файла
+        # Фрейм с ответом
         ans_frame = CTkFrame(main_frame)
         ans_frame.grid(row=1, column=1, padx=10, pady=10)
 
